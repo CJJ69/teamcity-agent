@@ -1,0 +1,41 @@
+trigger:
+- master
+
+resources:
+- repo: self
+
+variables:
+  OSVersion: 'ltsc2019'
+  ContainerRegistryName: 'creativedocker'
+  ServerImageName: 'teamcity-agent'
+
+jobs:
+- job: OctopusServer
+
+  pool:
+    name: Default
+    
+  steps:
+  - task: Docker@1
+    displayName: 'Build an image'
+    inputs:
+      containerregistrytype: 'Container Registry'
+      dockerRegistryEndpoint: $(ContainerRegistryName)
+      useDefaultContext: false
+      buildContext: ./      
+      dockerFile: Dockerfile
+      arguments: '--build-arg TAG=$(OSVersion)'
+      imageName: '$(ContainerRegistryName)/$(ServerImageName):$(OSVersion)'
+      qualifyImageName: false
+      includeLatestTag: true
+
+  - task: Docker@1
+    displayName: 'Push images'
+    inputs:
+      containerregistrytype: 'Container Registry'
+      dockerRegistryEndpoint: $(ContainerRegistryName)
+      command: 'Push an image'
+      imageName: '$(ContainerRegistryName)/$(ServerImageName)'
+      qualifyImageName: false
+
+      
