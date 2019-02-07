@@ -1,6 +1,6 @@
 ARG TAG=1803
+ENV TAG ${TAG}
 FROM microsoft/dotnet-framework:4.7.2-sdk-windowsservercore-$TAG AS tools
-# FROM microsoft/dotnet-framework:4.7.2-sdk-windowsservercore-ltsc2019 AS tools
 
 SHELL ["powershell", "-Command", "$ErrorActionPreference = 'Stop'; $ProgressPreference = 'SilentlyContinue';"]
 
@@ -36,7 +36,6 @@ RUN Invoke-WebRequest -UseBasicParsing https://dist.nuget.org/win-x86-commandlin
 FROM teamcity-minimal-agent:latest AS buildagent
 
 FROM microsoft/dotnet-framework:4.7.2-sdk-windowsservercore-$TAG
-# FROM microsoft/dotnet-framework:4.7.2-sdk
 
 COPY --from=tools ["C:/Program Files/Java/OpenJDK", "C:/Program Files/Java/OpenJDK"]
 COPY --from=tools ["C:/Program Files/Git", "C:/Program Files/Git"]
