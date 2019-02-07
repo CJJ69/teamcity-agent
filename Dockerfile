@@ -63,6 +63,9 @@ RUN [Net.ServicePointManager]::SecurityProtocol = 'tls12, tls11, tls' ; \
 # Install Yarn and NodeJs dependency
 RUN Invoke-Expression 'choco install yarn -y';
 
+# Install Docker client
+RUN Invoke-Expression 'choco install docker-cli -y';
+
 EXPOSE 9090
 
 VOLUME C:/BuildAgent/conf
