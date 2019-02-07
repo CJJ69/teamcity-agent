@@ -32,7 +32,8 @@ ENV NUGET_VERSION v4.8.1
 RUN Invoke-WebRequest -UseBasicParsing https://dist.nuget.org/win-x86-commandline/$Env:NUGET_VERSION/nuget.exe -OutFile $Env:ProgramFiles\NuGet\nuget.exe;
 
 
-FROM teamcity-minimal-agent:latest AS buildagent
+#FROM teamcity-minimal-agent:latest AS buildagent
+FROM jetbrains/teamcity-minimal-agent AS buildagent
 
 FROM microsoft/dotnet-framework:4.7.2-sdk-windowsservercore-$TAG
 
