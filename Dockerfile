@@ -1,5 +1,4 @@
-ARG TAG=1803
-ENV TAG ${TAG}
+ARG TAG=ltsc2019
 FROM microsoft/dotnet-framework:4.7.2-sdk-windowsservercore-$TAG AS tools
 
 SHELL ["powershell", "-Command", "$ErrorActionPreference = 'Stop'; $ProgressPreference = 'SilentlyContinue';"]
