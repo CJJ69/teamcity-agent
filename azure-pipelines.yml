@@ -10,7 +10,7 @@ variables:
   ServerImageName: 'teamcity-agent'
 
 jobs:
-- job: OctopusServer
+- job: TeamCityAgent
 
   pool:
     name: Default
@@ -35,7 +35,7 @@ jobs:
       containerregistrytype: 'Container Registry'
       dockerRegistryEndpoint: $(ContainerRegistryName)
       command: 'Push an image'
-      imageName: '$(ContainerRegistryName)/$(ServerImageName)'
+      imageName: '$(ContainerRegistryName)/$(ServerImageName):$(OSVersion)'
       qualifyImageName: false
 
       
