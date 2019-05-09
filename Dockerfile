@@ -16,7 +16,7 @@ RUN [Net.ServicePointManager]::SecurityProtocol = 'tls12, tls11, tls' ; \
 
 # Install Git
 RUN [Net.ServicePointManager]::SecurityProtocol = 'tls12, tls11, tls' ; \
-    Invoke-WebRequest https://github.com/git-for-windows/git/releases/download/v2.20.0.windows.1/MinGit-2.20.0-64-bit.zip -OutFile git.zip; \
+    Invoke-WebRequest https://github.com/git-for-windows/git/releases/download/v2.21.0.windows.1/MinGit-2.20.0-64-bit.zip -OutFile git.zip; \
     Expand-Archive git.zip -DestinationPath $Env:ProgramFiles\Git ; \
     Remove-Item -Force git.zip
 
@@ -90,6 +90,6 @@ ENV CONFIG_FILE="C:/BuildAgent/conf/buildAgent.properties" \
     NUGET_XMLDOC_MODE=skip
 
 # add hosts file entry for old TFS source repo
-RUN echo 192.168.10.201  whdev >> "C:/Windows/System32/drivers/etc/hosts"
+RUN Add-Content "C:/Windows/System32/drivers/etc/hosts" "`n192.168.10.201`twhdev"
 
 RUN setx /M PATH ('{0};{1}\bin;C:\Program Files\Git\cmd;C:\Program Files\Mercurial' -f $env:PATH, $env:JAVA_HOME)
