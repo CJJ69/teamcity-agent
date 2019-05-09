@@ -1,5 +1,5 @@
 ARG TAG=ltsc2019
-FROM microsoft/dotnet-framework:4.7.2-sdk-windowsservercore-$TAG AS tools
+FROM microsoft/dotnet-framework:4.8-sdk-windowsservercore-$TAG AS tools
 
 SHELL ["powershell", "-Command", "$ErrorActionPreference = 'Stop'; $ProgressPreference = 'SilentlyContinue';"]
 
@@ -27,7 +27,7 @@ RUN [Net.ServicePointManager]::SecurityProtocol = 'tls12, tls11, tls' ; \
     Remove-Item -Force hg.msi
 
 # get latest version of Nuget
-ENV NUGET_VERSION v4.8.1
+ENV NUGET_VERSION v4.9.4
 #ENV NUGET_VERSION latest
 RUN Invoke-WebRequest -UseBasicParsing https://dist.nuget.org/win-x86-commandline/$Env:NUGET_VERSION/nuget.exe -OutFile $Env:ProgramFiles\NuGet\nuget.exe;
 
@@ -35,7 +35,7 @@ RUN Invoke-WebRequest -UseBasicParsing https://dist.nuget.org/win-x86-commandlin
 #FROM teamcity-minimal-agent:latest AS buildagent
 FROM jetbrains/teamcity-minimal-agent AS buildagent
 
-FROM microsoft/dotnet-framework:4.7.2-sdk-windowsservercore-$TAG
+FROM microsoft/dotnet-framework:4.8-sdk-windowsservercore-$TAG
 
 COPY --from=tools ["C:/Program Files/Java/OpenJDK", "C:/Program Files/Java/OpenJDK"]
 COPY --from=tools ["C:/Program Files/Git", "C:/Program Files/Git"]
