@@ -1,5 +1,5 @@
 ARG TAG=ltsc2019
-FROM microsoft/dotnet-framework:4.8-sdk-windowsservercore-$TAG AS tools
+FROM mcr.microsoft.com/dotnet/framework/sdk:4.8-windowsservercore-$TAG AS tools
 
 SHELL ["powershell", "-Command", "$ErrorActionPreference = 'Stop'; $ProgressPreference = 'SilentlyContinue';"]
 
@@ -35,7 +35,7 @@ RUN Invoke-WebRequest -UseBasicParsing https://dist.nuget.org/win-x86-commandlin
 #FROM teamcity-minimal-agent:latest AS buildagent
 FROM jetbrains/teamcity-minimal-agent AS buildagent
 
-FROM microsoft/dotnet-framework:4.8-sdk-windowsservercore-$TAG
+FROM mcr.microsoft.com/dotnet/framework/sdk:4.8-windowsservercore-$TAG
 
 COPY --from=tools ["C:/Program Files/Java/OpenJDK", "C:/Program Files/Java/OpenJDK"]
 COPY --from=tools ["C:/Program Files/Git", "C:/Program Files/Git"]
