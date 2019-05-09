@@ -89,4 +89,7 @@ ENV CONFIG_FILE="C:/BuildAgent/conf/buildAgent.properties" \
     # Skip extraction of XML docs - generally not useful within an image/container - helps perfomance
     NUGET_XMLDOC_MODE=skip
 
+# add hosts file entry for old TFS source repo
+RUN echo 192.168.10.201  whdev >> "C:/Windows/System32/drivers/etc/hosts"
+
 RUN setx /M PATH ('{0};{1}\bin;C:\Program Files\Git\cmd;C:\Program Files\Mercurial' -f $env:PATH, $env:JAVA_HOME)
