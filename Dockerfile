@@ -38,7 +38,7 @@ RUN [Net.ServicePointManager]::SecurityProtocol = 'tls12, tls11, tls' ; \
     Remove-Item -Force sleet.zip
 
 # Sleet create json config
-RUN Start-Process $Env:ProgramFiles/Sleet/tools/Sleet.exe \
+RUN Start-Process Sleet.exe -WorkingDirectory $Env:ProgramFiles/Sleet/tools  \
         -ArgumentList 'createconfig', '--azure' \
         -NoNewWindow -Wait;
 
@@ -84,8 +84,8 @@ EXPOSE 9090
 VOLUME C:/BuildAgent/conf
 
 ENTRYPOINT ["/Scripts/entrypoint.bat"]
-
-CMD ./BuildAgent/run-agent.ps1
+# moved to Entrypoint.bat
+#CMD ./BuildAgent/run-agent.ps1
 
     # Configuration file for TeamCity agent
 ENV CONFIG_FILE="C:/BuildAgent/conf/buildAgent.properties" \
