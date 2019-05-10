@@ -37,11 +37,6 @@ RUN [Net.ServicePointManager]::SecurityProtocol = 'tls12, tls11, tls' ; \
     Expand-Archive sleet.zip -DestinationPath $Env:ProgramFiles/Sleet ; \
     Remove-Item -Force sleet.zip
 
-# Sleet create json config
-RUN Start-Process Sleet.exe -WorkingDirectory $Env:ProgramFiles/Sleet/tools  \
-        -ArgumentList 'createconfig', '--azure' \
-        -NoNewWindow -Wait;
-
 
 #FROM teamcity-minimal-agent:latest AS buildagent
 FROM jetbrains/teamcity-minimal-agent AS buildagent

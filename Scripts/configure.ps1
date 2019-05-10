@@ -3,6 +3,9 @@
 # Set Sleet Nuget Feed Source ConnectionString
 if (Test-Path $Env:ProgramFiles/Sleet/tools)
 {
+    # Sleet create json config
+    Start-Process Sleet.exe -WorkingDirectory $Env:ProgramFiles/Sleet/tools -ArgumentList 'createconfig', '--azure' -Wait -NoNewWindow
+    
     $sleetJson = Get-Content $Env:ProgramFiles/Sleet/tools/sleet.json -ErrorAction SilentlyContinue | ConvertFrom-Json
     if ($sleetJson)
     {
