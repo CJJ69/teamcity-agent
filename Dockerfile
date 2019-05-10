@@ -29,7 +29,16 @@ RUN [Net.ServicePointManager]::SecurityProtocol = 'tls12, tls11, tls' ; \
 # get latest version of Nuget
 ENV NUGET_VERSION v4.9.4
 #ENV NUGET_VERSION latest
-RUN Invoke-WebRequest -UseBasicParsing https://dist.nuget.org/win-x86-commandline/$Env:NUGET_VERSION/nuget.exe -OutFile $Env:ProgramFiles\NuGet\nuget.exe;
+RUN Invoke-WebRequest -UseBasicParsing https://dist.nuget.org/win-x86-commandline/$Env:NUGET_VERSION/nuget.exe -OutFile $Env:ProgramFiles/NuGet/nuget.exe;
+
+# Install Sleet
+RUN [Net.ServicePointManager]::SecurityProtocol = 'tls12, tls11, tls' ; \
+    Invoke-WebRequest https://www.nuget.org/api/v2/package/Sleet/2.3.79 -OutFile sleet.zip; \
+    Expand-Archive sleet.zip -DestinationPath $Env:ProgramFiles/Sleet ; \
+    Remove-Item -Force sleet.zip
+
+# Sleet create json config
+RUN $Env:ProgramFiles/Sleet/tools/Sleet.exe createconfig --azure
 
 
 #FROM teamcity-minimal-agent:latest AS buildagent
@@ -41,8 +50,10 @@ COPY --from=tools ["C:/Program Files/Java/OpenJDK", "C:/Program Files/Java/OpenJ
 COPY --from=tools ["C:/Program Files/Git", "C:/Program Files/Git"]
 COPY --from=tools ["C:/Program Files/Mercurial", "C:/Program Files/Mercurial"]
 COPY --from=tools ["C:/Program Files/NuGet", "C:/Program Files/NuGet"]
+COPY --from=tools ["C:/Program Files/Sleet", "C:/Program Files/Sleet"]
 COPY --from=buildagent /BuildAgent /BuildAgent
 
+COPY Scripts/*.* /Scripts/
 
 # Install Chocolatey, VS Data SSDT, Web Build Tools
 RUN [Net.ServicePointManager]::SecurityProtocol = 'tls12, tls11, tls' ; \
@@ -70,6 +81,8 @@ EXPOSE 9090
 
 VOLUME C:/BuildAgent/conf
 
+ENTRYPOINT ["/Scripts/entrypoint.bat"]
+
 CMD ./BuildAgent/run-agent.ps1
 
     # Configuration file for TeamCity agent
@@ -87,9 +100,11 @@ ENV CONFIG_FILE="C:/BuildAgent/conf/buildAgent.properties" \
     # Enable correct mode for dotnet watch (only mode supported in a container)
     DOTNET_USE_POLLING_FILE_WATCHER=true \
     # Skip extraction of XML docs - generally not useful within an image/container - helps perfomance
-    NUGET_XMLDOC_MODE=skip
+    NUGET_XMLDOC_MODE=skip \
+    # Connection String for Nuget feed must be specified when instantiating container
+    FEED_CONN_STR=""
 
 # add hosts file entry for old TFS source repo
 RUN Add-Content "C:/Windows/System32/drivers/etc/hosts" "`n192.168.10.201`twhdev"
 
-RUN setx /M PATH ('{0};{1}\bin;C:\Program Files\Git\cmd;C:\Program Files\Mercurial' -f $env:PATH, $env:JAVA_HOME)
+RUN setx /M PATH ('{0};{1}\bin;C:\Program Files\Git\cmd;C:\Program Files\Sleet\tools;C:\Program Files\Mercurial' -f $env:PATH, $env:JAVA_HOME)
